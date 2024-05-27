@@ -2,7 +2,7 @@ version: '3'
 
 services:
   app:
-    image: embraslabs/ruby:2.5.1
+    image: embraslabs/ruby:3.2.2
     stdin_open: true
     depends_on:
       - db
@@ -11,7 +11,7 @@ services:
       - gems:/.gems
 
   db:
-    image: jacobalberty/firebird:2.5.8-ss
+    image: jacobalberty/firebird:v3.0.10
     environment:
       - ISC_PASSWORD=masterkey
       - TZ=America/Sao_Paulo
