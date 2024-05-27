@@ -10,3 +10,4 @@
 
 *.sublime-*
 *.code-*
+.tool-versions
