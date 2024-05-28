@@ -122,9 +122,4 @@ protected
       super
     end
   end
-
 end
-
-
-puts @connection.inspect
-puts '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2' 
