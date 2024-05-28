@@ -5,7 +5,7 @@ require 'active_record/connection_adapters/ar_firebird/database_limits'
 require 'active_record/connection_adapters/ar_firebird/database_statements'
 require 'active_record/connection_adapters/ar_firebird/schema_statements'
 require 'active_record/connection_adapters/ar_firebird/sql_type_metadata'
-#require 'active_record/connection_adapters/ar_firebird/fb_column'
+require 'active_record/connection_adapters/ar_firebird/fb_column'
 require 'active_record/connection_adapters/ar_firebird/quoting'
 
 require 'arel/visitors/ar_firebird'
@@ -124,3 +124,7 @@ protected
   end
 
 end
+
+
+puts @connection.inspect
+puts '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2' 
