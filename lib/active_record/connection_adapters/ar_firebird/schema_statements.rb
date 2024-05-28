@@ -135,6 +135,10 @@ module ActiveRecord
         private
 
           def column_definitions(table_name)
+
+            puts @connection.inspect
+            puts table_name
+            puts "--------------------------------------------------------------------"
             @connection.columns(table_name)
           end
 

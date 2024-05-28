@@ -13,6 +13,9 @@ module ActiveRecord::ConnectionHandling
 
     connection = ::Fb::Database.new(config).connect
 
+    puts connection
+    puts "#######################################################"
+
     ActiveRecord::ConnectionAdapters::ArFirebirdAdapter.new(connection, logger, config)
   end
 end
