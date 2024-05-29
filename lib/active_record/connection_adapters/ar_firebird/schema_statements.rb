@@ -1,14 +1,15 @@
 module ActiveRecord
   module ConnectionAdapters
     module ArFirebird
-      module SchemaStatements
+      module SchemaStatements 
+
 
         def tables(_name = nil)
-          @connection.table_names
+          @unconfigured_connection.table_names
         end
 
         def views
-          @connection.view_names
+          @unconfigured_connection.view_names
         end
 
         def indexes(table_name)
@@ -105,7 +106,7 @@ module ActiveRecord
               name: row[0].strip.downcase,
               primary_key: row[3].downcase
             }
-
+            sql_type="VARCHAR", 
             ActiveRecord::ConnectionAdapters::ForeignKeyDefinition.new(table_name, row[1].strip.downcase, options)
           end
         end
@@ -135,11 +136,7 @@ module ActiveRecord
         private
 
           def column_definitions(table_name)
-
-            puts @connection.inspect
-            puts table_name
-            puts "--------------------------------------------------------------------"
-            @connection.columns(table_name)
+            @unconfigured_connection.columns(table_name)
           end
 
           def integer_like_primary_key_type(type, options)
@@ -150,8 +147,10 @@ module ActiveRecord
             end
           end
 
-          def new_column_from_field(table_name, field)
+          def new_column_from_field(table_name, field, definitions)
+
             type_metadata = fetch_type_metadata(field["sql_type"], field)
+
             ActiveRecord::ConnectionAdapters::ArFirebird::FbColumn.new(
               field["name"],
               field["default"],
@@ -166,11 +165,13 @@ module ActiveRecord
           end
 
           def fetch_type_metadata(sql_type, field = "")
+          
             if field['domain'] == ActiveRecord::ConnectionAdapters::ArFirebirdAdapter.boolean_domain[:name]
               cast_type = lookup_cast_type("boolean")
             else
               cast_type = lookup_cast_type(sql_type)
             end
+
             ActiveRecord::ConnectionAdapters::ArFirebird::SqlTypeMetadata.new(
               sql_type: sql_type,
               type: cast_type.type,

@@ -1,13 +1,14 @@
 module ActiveRecord
   module ConnectionAdapters
     module ArFirebird
+        
       class FbColumn < ActiveRecord::ConnectionAdapters::Column # :nodoc:
 
         attr_reader :domain
         def initialize(
             name,
             default,
-            sql_type_metadata = nil,
+            sql_type_metadata = nil, 
             null = true,
             table_name = nil,
             default_function = nil,
@@ -16,6 +17,7 @@ module ActiveRecord
             firebird_options = {}
           )
           @domain = firebird_options.domain
+
           super(
             name,
             default,

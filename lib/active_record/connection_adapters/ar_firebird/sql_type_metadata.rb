@@ -3,6 +3,10 @@ module ActiveRecord
     module ArFirebird
       class SqlTypeMetadata 
 
+        include ActiveRecord::ConnectionAdapters::Deduplicable
+
+        attr_reader :sql_type, :type, :limit, :precision, :scale
+
         def initialize(sql_type: nil, type: nil, limit: nil, precision: nil, scale: nil, **firebird_options)
           @sql_type = sql_type
           @type = (firebird_options[:field].domain) ? :boolean : sql_type

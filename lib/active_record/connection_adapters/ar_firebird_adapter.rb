@@ -1,4 +1,5 @@
 require 'fb'
+include Fb
 
 require 'active_record/connection_adapters/ar_firebird/connection'
 require 'active_record/connection_adapters/ar_firebird/database_limits'
@@ -14,12 +15,11 @@ class ActiveRecord::ConnectionAdapters::ArFirebirdAdapter < ActiveRecord::Connec
 
   ADAPTER_NAME = "ArFirebird".freeze
   DEFAULT_ENCODING = "Windows-1252".freeze
- 
+
   include ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseLimits
   include ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
   include ActiveRecord::ConnectionAdapters::ArFirebird::SchemaStatements
-  include ActiveRecord::ConnectionAdapters::ArFirebird::Quoting
-  
+  include ActiveRecord::ConnectionAdapters::ArFirebird::Quoting  
 
   @boolean_domain = { name: "smallint", limit: 1, type: "smallint", true: 1, false: 0}
 
@@ -64,7 +64,7 @@ class ActiveRecord::ConnectionAdapters::ArFirebirdAdapter < ActiveRecord::Connec
 
   def reconnect!
     disconnect!
-    @connection = ::Fb::Database.connect(@config)
+    @connection = Database.connect(@config)
   end
 
   def disconnect!

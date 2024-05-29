@@ -22,8 +22,8 @@ module ActiveRecord
         end
 
         def lookup_cast_type_from_column(column) # :nodoc:
-          sql_type = (column.domain == boolean_domain[:name]) ? 'BOOLEAN' : column.sql_type
-          type_map.lookup(sql_type)
+         sql_type = (column.domain == boolean_domain[:name]) ? 'BOOLEAN' : column.sql_type
+         type_map.lookup(sql_type)
         end
 
         def quoted_date(value)
