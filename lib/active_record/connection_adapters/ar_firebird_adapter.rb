@@ -54,9 +54,9 @@ class ActiveRecord::ConnectionAdapters::ArFirebirdAdapter < ActiveRecord::Connec
   end
 
   def active?
-    return false unless @connection.open?
+    return false unless @unconfigured_connection.open?
 
-    @connection.query("SELECT 1 FROM RDB$DATABASE")
+    @unconfigured_connection.query("SELECT 1 FROM RDB$DATABASE")
     true
   rescue
     false
@@ -64,12 +64,12 @@ class ActiveRecord::ConnectionAdapters::ArFirebirdAdapter < ActiveRecord::Connec
 
   def reconnect!
     disconnect!
-    @connection = Database.connect(@config)
+    @unconfigured_connection = Database.connect(@config)
   end
 
   def disconnect!
     super
-    @connection.close rescue nil
+    @unconfigured_connection.close rescue nil
   end
 
   def reset!
@@ -95,7 +95,7 @@ class ActiveRecord::ConnectionAdapters::ArFirebirdAdapter < ActiveRecord::Connec
   end
 
   def encoding
-    @connection.encoding
+    @unconfigured_connection.encoding
   end
 
   def log(sql, name = "SQL", binds = [], type_casted_binds = [], statement_name = nil) # :doc:

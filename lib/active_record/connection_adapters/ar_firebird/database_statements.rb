@@ -71,7 +71,7 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
 
     log(sql, name) do
       ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
-        @connection.query(sql)
+        @@unconfigured_connection.query(sql)
       end
     end
   end
@@ -86,12 +86,12 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
     log(sql, name, binds, type_casted_binds) do
       ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
         begin
-          result = @connection.execute(sql, *type_casted_binds)
+          result = @unconfigured_connection.execute(sql, *type_casted_binds)
           if result.is_a?(Fb::Cursor)
             fields = result.fields.map(&:name)
             rows = result.fetchall.map do |row|
               row.map do |col|
-                col.encode('UTF-8', @connection.encoding) rescue col
+                col.encode('UTF-8', @@unconfigured_connection.encoding) rescue col
               end
             end
 
@@ -101,22 +101,22 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
             result
           end
         rescue Exception => e
-          raise e.message.encode('UTF-8', @connection.encoding)
+          raise e.message.encode('UTF-8', @@unconfigured_connection.encoding)
         end
       end
     end
   end
 
   def begin_db_transaction
-    log("begin transaction", nil) { @connection.transaction('READ COMMITTED') }
+    log("begin transaction", nil) { @@unconfigured_connection.transaction('READ COMMITTED') }
   end
 
   def commit_db_transaction
-    log("commit transaction", nil) { @connection.commit }
+    log("commit transaction", nil) { @@unconfigured_connection.commit }
   end
 
   def exec_rollback_db_transaction
-    log("rollback transaction", nil) { @connection.rollback }
+    log("rollback transaction", nil) { @@unconfigured_connection.rollback }
   end
 
   def create_table(table_name, **options)
@@ -153,7 +153,7 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
   end
 
   def sequence_exists?(sequence_name)
-    @connection.generator_names.include?(sequence_name)
+    @unconfigured_connection.generator_names.include?(sequence_name)
   end
 
   def default_sequence_name(table_name, _column = nil)
@@ -161,10 +161,41 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
   end
 
   def next_sequence_value(sequence_name)
-    @connection.query("SELECT NEXT VALUE FOR #{sequence_name} FROM RDB$DATABASE")[0][0]
+    @@unconfigured_connection.query("SELECT NEXT VALUE FOR #{sequence_name} FROM RDB$DATABASE")[0][0]
   end
 
   def remove_column(table_name, column_name, type = nil, options = {})
     execute "ALTER TABLE #{table_name} DROP #{column_name}"
+  end
+
+  def internal_exec_query(sql, name = nil, binds = [], prepare: false, async: false) # :nodoc:
+   sql = sql.encode(encoding, 'UTF-8')
+
+    type_casted_binds = type_casted_binds(binds).map do |value|
+      value.encode(encoding) rescue value
+    end
+
+    log(sql, name, binds, type_casted_binds, async: async) do
+      ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+        begin
+          result = @unconfigured_connection.execute(sql, *type_casted_binds)
+          if result.is_a?(Fb::Cursor)
+            fields = result.fields.map(&:name)
+            rows = result.fetchall.map do |row|
+              row.map do |col|
+                col.encode('UTF-8', @unconfigured_connection.encoding) rescue col
+              end
+            end
+
+            result.close
+            ActiveRecord::Result.new(fields, rows)
+          else
+            result
+          end
+        rescue Exception => e
+          raise e.message.encode('UTF-8', @unconfigured_connection.encoding)
+        end
+      end   
+    end
   end
 end

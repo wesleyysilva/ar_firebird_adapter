@@ -1,8 +1,6 @@
 module ActiveRecord::ConnectionHandling
   require 'fb'
-  include Fb
-
-
+  
   def ar_firebird_connection(config)
     require 'active_record/extensions'
     require 'active_record/internal_metadata_extensions'
@@ -17,9 +15,9 @@ module ActiveRecord::ConnectionHandling
       config[:database] = File.expand_path(config[:database], Rails.root)
     end
 
-    connection = Database.new(config).connect
+    connection = ::Fb::Database.new(config).connect
 
-    ActiveRecord::ConnectionAdapters::ArFirebirdAdapter.new(*connection, logger, config)
+    ActiveRecord::ConnectionAdapters::ArFirebirdAdapter.new(connection, logger, config)
 
   end
 end
