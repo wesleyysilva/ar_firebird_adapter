@@ -161,7 +161,7 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
   end
 
   def next_sequence_value(sequence_name)
-    @@unconfigured_connection.query("SELECT NEXT VALUE FOR #{sequence_name} FROM RDB$DATABASE")[0][0]
+    @unconfigured_connection.query("SELECT NEXT VALUE FOR #{sequence_name} FROM RDB$DATABASE")[0][0]
   end
 
   def remove_column(table_name, column_name, type = nil, options = {})
