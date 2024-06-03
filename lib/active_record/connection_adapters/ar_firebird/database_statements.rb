@@ -98,6 +98,11 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
             result.close
             ActiveRecord::Result.new(fields, rows)
           else
+            puts "******************************************"
+            puts __FILE__
+            puts result
+            puts "******************************************"
+
             result
           end
         rescue Exception => e
@@ -190,6 +195,10 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
             result.close
             ActiveRecord::Result.new(fields, rows)
           else
+            puts "-------------------------------------------"
+            puts __FILE__
+            puts result
+            puts "-------------------------------------------"
             result
           end
         rescue Exception => e
