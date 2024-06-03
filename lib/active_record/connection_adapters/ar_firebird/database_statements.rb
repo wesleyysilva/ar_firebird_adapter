@@ -108,15 +108,15 @@ module ActiveRecord::ConnectionAdapters::ArFirebird::DatabaseStatements
   end
 
   def begin_db_transaction
-    log("begin transaction", nil) { @@unconfigured_connection.transaction('READ COMMITTED') }
+    log("begin transaction", nil) { @unconfigured_connection.transaction('READ COMMITTED') }
   end
 
   def commit_db_transaction
-    log("commit transaction", nil) { @@unconfigured_connection.commit }
+    log("commit transaction", nil) { @unconfigured_connection.commit }
   end
 
   def exec_rollback_db_transaction
-    log("rollback transaction", nil) { @@unconfigured_connection.rollback }
+    log("rollback transaction", nil) { @unconfigured_connection.rollback }
   end
 
   def create_table(table_name, **options)

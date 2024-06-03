@@ -17,9 +17,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '~> 3.2.0'
+  spec.required_ruby_version = '~> 3.0.0'
 
-  spec.add_dependency 'fb', '~> 0.9.0'
+  spec.add_dependency 'fb', '~> 0.9.3'
   spec.add_dependency 'rails', '7.1.3.3'
 
   spec.add_development_dependency 'bundler', '~> 2.4.19'
